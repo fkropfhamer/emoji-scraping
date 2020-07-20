@@ -17,6 +17,8 @@ def main():
         # print(href)
         get_categorie_page(URL + categorie_href)
 
+def get_all_emojis():
+    pass
         
 def get_categorie_page(url):
     categorie_page = requests.get(url)
@@ -25,9 +27,14 @@ def get_categorie_page(url):
     emoji_list = soup.find(id="content")
     emojis = emoji_list.find_all('a')
 
+    # return list(map(lambda emoji: expression))
+
     for emoji in emojis:
         emoji_href = emoji['href']
-        get_emoji(URL + emoji_href)
+        try:
+            get_emoji(URL + emoji_href)
+        except:
+            print('emoji', emoji_href, 'failed')
 
 def get_emoji(url):
     emoji_page = requests.get(url)
@@ -58,14 +65,14 @@ def get_emoji(url):
 
     emoji = Emoji(emoji_dict, translation_dict)
 
+    # return emoji
 
-    emoji_json = json.dumps(emoji.to_dict())
+    emoji_json = json.dumps(emoji.to_dict(), ensure_ascii=False)
     file_name = emoji.name.lower().replace(" ", "_") + '.json'
-
-    print(emoji_dict)
 
     with open('emojis/' + file_name, 'w') as file:
         file.write(emoji_json)
+
 
 
 class Emoji:
@@ -104,6 +111,6 @@ class Emoji:
         }
     
 if __name__ == '__main__':
-    # main()
+    main()
 
-    get_emoji('https://emojiguide.org/grinning-face')
+    #get_emoji('https://emojiguide.org/grinning-face')
